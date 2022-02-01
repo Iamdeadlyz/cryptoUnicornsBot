@@ -10,4 +10,5 @@ Oauth Discord scopes:
 
 ==============================
 
-![sample](https://media.discordapp.net/attachments/859124935883882547/937559770712395776/unknown.png)
+![sample1](https://media.discordapp.net/attachments/859124935883882547/937559770712395776/unknown.png)
+![sample2](https://media.discordapp.net/attachments/859124935883882547/938080885125828629/unknown.png)
