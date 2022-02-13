@@ -142,12 +142,14 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
     price = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
   else:
     price = priceOfUNIM[currency]
-  embed=discord.Embed(title="Crypto Unicorns - UNIM price", description="Official contract address: 0x64060aB139Feaae7f06Ca4E63189D86aDEb51691", color=0xff00c8, url="https://www.coingecko.com/en/coins/unicorn-milk")
+  embed=discord.Embed(title="Crypto Unicorns - UNIM price", description="**Official contract address:** 0x64060aB139Feaae7f06Ca4E63189D86aDEb51691 \n[Polygonscan link](https://polygonscan.com/token/0x64060ab139feaae7f06ca4e63189d86adeb51691)", color=0xff00c8, url="https://www.coingecko.com/en/coins/unicorn-milk")
   embed.set_thumbnail(url="https://pbs.twimg.com/media/FLWja6dXIAoMgbC?format=png&name=small")
   embed.add_field(name="UNIM price", value=f"{price} {currency.upper()}", inline=False)
   if amount is not None:
     if currency == "eth":
-      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} UNIM = {float(price)*amount} {currency.upper()}", inline=False)
+      calculation = float(price)*amount
+      finalCalc = ("%.17f" % calculation).rstrip('0').rstrip('.')
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} UNIM = {finalCalc} {currency.upper()}", inline=False)
     else:
       embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} UNIM = {(price*amount):,.2f} {currency.upper()}", inline=False)
   embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
