@@ -1,5 +1,5 @@
 # cryptoUnicorns-shadowCornTracker
-A Crypto Unicorns Discord bot.
+A Crypto Uncirons Discord bot. Track the remaining shadowcorn eggs, lootbox, UNIM left in the dark forest, and the price.
 
 ==============================
 
