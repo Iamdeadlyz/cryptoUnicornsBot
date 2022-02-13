@@ -2,7 +2,9 @@ import os
 import discord
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_choice, create_option
 from cryptoUnicorn import remainingShadowCornEggs, getShadowCorns, totalLootBox, getLootBox, unimLeft, getUNIM
+from price import priceOfUNIM, getUNIMPrice
 
 ###########################################################################
 
@@ -73,6 +75,89 @@ async def unim(ctx:SlashContext):
   embed.add_field(name="UNIM", value="{}".format(unimLeft["unim"]), inline=False)
   await ctx.send(embed=embed)
 
+###########################################################################
+
+@slash.slash(
+  name="unimPrice",
+  description="Get the price of UNIM",
+  guild_ids=[000000000000000], #replace the guildID here to your server ID
+  default_permission=True,
+  options=[
+    create_option(
+      name="currency",
+      description="Choose the currency",
+      required=True,
+      option_type=3,
+      choices=[
+        create_choice(
+          name="Ethereum",
+          value="eth"
+        ),
+        create_choice(
+          name="US Dollar",
+          value="usd"
+        ),
+        create_choice(
+          name="Philippine Peso",
+          value="php"
+        ),
+        create_choice(
+          name="Canadian Dollar",
+          value="cad"
+        ),
+        create_choice(
+          name="South African Rand",
+          value="zar"
+        ),
+        create_choice(
+          name="Hungarian Forint",
+          value="huf"
+        ),
+        create_choice(
+          name="Chinese Yuan",
+          value="cny"
+        ),
+        create_choice(
+          name="Russian Ruble",
+          value="rub"
+        ),
+        create_choice(
+          name="Thai Baht",
+          value="thb"
+        )
+      ]
+    ),
+    create_option(
+      name="amount",
+      description="Choose the amount (optional)",
+      required=False,
+      option_type=4
+    )
+  ]
+)
+
+async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
+  getUNIMPrice()
+  if currency == "eth":
+    price = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
+  else:
+    price = priceOfUNIM[currency]
+  if amount is not None:
+    embed=discord.Embed(title="Crypto Unicorns - UNIM price", description="\u200b", color=0xff00c8)
+    embed.set_thumbnail(url="https://pbs.twimg.com/media/FLWja6dXIAoMgbC?format=png&name=small")
+    embed.add_field(name="UNIM price", value=f"{price} {currency.upper()}", inline=False)
+    if currency == "eth":
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} = {float(price)*amount} {currency.upper()}", inline=False)
+    else:
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} = {(price*amount):,.2f} {currency.upper()}", inline=False)
+    embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
+  else:
+    embed=discord.Embed(title="Crypto Unicorns - UNIM price", description="\u200b", color=0xff00c8)
+    embed.set_thumbnail(url="https://pbs.twimg.com/media/FLWja6dXIAoMgbC?format=png&name=small")
+    embed.add_field(name="UNIM price", value=f"{price} {currency.upper()}", inline=False)
+    embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
+  await ctx.send(embed=embed)
+  
 ###########################################################################
 
 client.run("enterYourDiscordBotToken")
