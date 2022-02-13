@@ -26,8 +26,8 @@ Commands:
 
 ![sample2](https://i.imgur.com/pVf9H3Z.png)
 
-- Get the current price of UNIM to your desired currency and calculate the equivalent amount.
+- Get the current price of UNIM to your desired currency and calculate the equivalent amount. Hyperlinked the Coingecko and Polygonscan pages. The price data is cached for 30s to prevent being rate-limited.
 
 ![sample3](https://i.imgur.com/d2hri22.png)
 ![sample4](https://i.imgur.com/OZTGEct.png)
-![sample5](https://i.imgur.com/mdwLLUT.png)
+![sample5](https://i.imgur.com/oRnQjGn.png)
