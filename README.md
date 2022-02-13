@@ -30,4 +30,4 @@ Commands:
 
 ![sample3](https://i.imgur.com/d2hri22.png)
 ![sample4](https://i.imgur.com/OZTGEct.png)
-![sample5](https://i.imgur.com/el9ckYX.png)
+![sample5](https://i.imgur.com/mdwLLUT.png)
