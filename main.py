@@ -238,6 +238,30 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
         create_choice(
           name="Philippine Peso",
           value="php"
+        ),
+        create_choice(
+          name="Canadian Dollar",
+          value="cad"
+        ),
+        create_choice(
+          name="South African Rand",
+          value="zar"
+        ),
+        create_choice(
+          name="Hungarian Forint",
+          value="huf"
+        ),
+        create_choice(
+          name="Chinese Yuan",
+          value="cny"
+        ),
+        create_choice(
+          name="Russian Ruble",
+          value="rub"
+        ),
+        create_choice(
+          name="Thai Baht",
+          value="thb"
         )
       ]
     ),
