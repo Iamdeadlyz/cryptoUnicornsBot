@@ -218,16 +218,8 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
 @slash.slash(
   name="breedUnicorn",
   description="Calculate the breed points of a unicorn",
-  guild_ids=[775721079539761154,777099688604205057],
-  default_permission=False,
-  permissions={
-    775721079539761154 : [
-      create_permission(849625257186164777, SlashCommandPermissionType.ROLE, True)
-    ],
-    777099688604205057: [
-      create_permission(777105517608435712, SlashCommandPermissionType.ROLE, True)
-    ]
-  },
+  guild_ids=[000000000000000], #replace the guildID here to your server ID
+  default_permission=True,
   options=[
     create_option(
       name="currency",
