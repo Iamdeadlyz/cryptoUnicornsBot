@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_choice, create_option
-from cryptoUnicorn import remainingShadowCornEggs, getShadowCorns, totalLootBox, getLootBox, unimLeft, getUNIM
+from cryptoUnicorn import getShadowCorns, getLootBox, getUNIM, updateTransactions, getRequestIDs, filterSummons
 from price import priceOfUNIM, getUNIMPrice
 
 ###########################################################################
@@ -30,7 +30,7 @@ async def on_message(message):
 )
 
 async def shadowCorn(ctx:SlashContext):
-  getShadowCorns()
+  remainingShadowCornEggs = getShadowCorns()
   embed=discord.Embed(title="Crypto Unicorns Darkforest - Remaining shadowcorn eggs", description="\u200b", color=0xff00c8)
   embed.set_thumbnail(url="https://lh3.googleusercontent.com/EorjfSP6_15XdWcMLzJqHTC-y1aadmGeL_jydEtpL4aTj--lUdQ1GWy_bdvb8PN6Dmf46rXOZxgYQkbDVEoNnjHrWKO9HUdc39RdPkA=s0")
   embed.add_field(name="Total eggs", value="3000", inline=False)
@@ -44,6 +44,64 @@ async def shadowCorn(ctx:SlashContext):
 
 ###########################################################################
 
+def percentage(part, whole):
+  percentage = 100 * float(part)/float(whole)
+  final = round(percentage,2)
+  return str(final) + "%"
+
+@slash.slash(
+  name="summonresults",
+  description="Get the number of summons of each category",
+  guild_ids=[000000000000000], #replace the guildID here to your server ID
+  default_permission=True
+)
+
+async def summonresults(ctx:SlashContext):
+  message = await ctx.send("Processing data. `/summonresults` commands sent before this message is fully processed will fail. Please wait for 1 to 10 minutes. Thanks!\n(If, after 10 minutes, the bot has not updated this message yet, please send the same command.)")
+  updateTransactions()
+  getRequestIDs()
+  summons = filterSummons()
+  basicTotalSummon = summons["basic"]["totalSummon"]
+  basicRareLootbox = summons["basic"]["lootbox"]["rare"]
+  basicShadowcornCommon = summons["basic"]["shadowCorns"]["common"]
+  basicShadowcornRare = summons["basic"]["shadowCorns"]["rare"]
+  basicShadowCornMythic = summons["basic"]["shadowCorns"]["mythic"]
+  complexTotalSummon = summons["complex"]["totalSummon"]
+  complexMythicLootbox = summons["complex"]["lootbox"]["mythic"]
+  complexShadowCornCommon = summons["complex"]["shadowCorns"]["common"]
+  complexShadowCornRare = summons["complex"]["shadowCorns"]["rare"]
+  complexShadowCornMythic = summons["complex"]["shadowCorns"]["mythic"]
+  advancedTotalSummon = summons["advanced"]["totalSummon"]
+  advancedShadowcornCommon = summons["advanced"]["shadowCorns"]["common"]
+  advancedShadowcornRare = summons["advanced"]["shadowCorns"]["rare"]
+  advancedShadowcornMythic = summons["advanced"]["shadowCorns"]["mythic"]
+  embed=discord.Embed(title="Crypto Unicorns Darkforest - Total summons per category", description="\u200b", color=0xff00c8)
+  embed.set_thumbnail(url="https://lh3.googleusercontent.com/EorjfSP6_15XdWcMLzJqHTC-y1aadmGeL_jydEtpL4aTj--lUdQ1GWy_bdvb8PN6Dmf46rXOZxgYQkbDVEoNnjHrWKO9HUdc39RdPkA=s0")
+  embed.add_field(name="Basic Summon (5k UNIM)", value=f"{basicTotalSummon}", inline=False)
+  embed.add_field(name="Result: Rare lootbox", value=f"{basicRareLootbox} - {percentage(basicRareLootbox,basicTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Common Shadowcorn", value=f"{basicShadowcornCommon} - {percentage(basicShadowcornCommon,basicTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Rare Shadowcorn", value=f"{basicShadowcornRare} - {percentage(basicShadowcornRare,basicTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Mythic Shadowcorn", value=f"{basicShadowCornMythic} - {percentage(basicShadowCornMythic,basicTotalSummon)} chance", inline=True)
+  embed.add_field(name="\u200b", value="\u200b", inline=False)
+  embed.add_field(name="Complex Summon (21k UNIM)", value=f"{complexTotalSummon}", inline=False)
+  embed.add_field(name="Result: Mythic lootbox", value=f"{complexMythicLootbox} - {percentage(complexMythicLootbox,complexTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Common Shadowcorn", value=f"{complexShadowCornCommon} - {percentage(complexShadowCornCommon,complexTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Rare Shadowcorn", value=f"{complexShadowCornRare} - {percentage(complexShadowCornRare,complexTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Mythic Shadowcorn", value=f"{complexShadowCornMythic} - {percentage(complexShadowCornMythic,complexTotalSummon)} chance", inline=True)
+  embed.add_field(name="\u200b", value="\u200b", inline=False)
+  embed.add_field(name="Advanced Summon (34k UNIM)", value=f"{advancedTotalSummon}", inline=False)
+  embed.add_field(name="Result: Common Shadowcorn", value=f"{advancedShadowcornCommon} - {percentage(advancedShadowcornCommon,advancedTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Rare Shadowcorn", value=f"{advancedShadowcornRare} - {percentage(advancedShadowcornRare,advancedTotalSummon)} chance", inline=True)
+  embed.add_field(name="Result: Mythic Shadowcorn", value=f"{advancedShadowcornMythic} - {percentage(advancedShadowcornMythic,advancedTotalSummon)} chance", inline=True)
+  embed.add_field(name="\u200b", value="\u200b", inline=False)
+  embed.add_field(name="Total shadowcorns minted", value=f"{summons['overall']['totalShadowCorns']}", inline=False)
+  embed.add_field(name="Common", value=f"{summons['overall']['common']}", inline=True)
+  embed.add_field(name="Rare", value=f"{summons['overall']['rare']}", inline=True)
+  embed.add_field(name="Mythic", value=f"{summons['overall']['mythic']}", inline=True)
+  await message.edit(content=None,embed=embed)
+
+###########################################################################
+
 @slash.slash(
   name="lootbox",
   description="Get the total minted lootbox",
@@ -52,7 +110,7 @@ async def shadowCorn(ctx:SlashContext):
 )
 
 async def lootbox(ctx:SlashContext):
-  getLootBox()
+  totalLootBox = getLootBox()
   embed=discord.Embed(title="Crypto Unicorns Darkforest - Minted lootbox", description="\u200b", color=0xff00c8)
   embed.set_thumbnail(url="https://lh3.googleusercontent.com/EorjfSP6_15XdWcMLzJqHTC-y1aadmGeL_jydEtpL4aTj--lUdQ1GWy_bdvb8PN6Dmf46rXOZxgYQkbDVEoNnjHrWKO9HUdc39RdPkA=s0")
   embed.add_field(name="Rare Lootbox", value="{} minted. [-OS link-](https://opensea.io/assets/matic/0x99a558bdbde247c2b2716f0d4cfb0e246dfb697d/5)".format(totalLootBox["rare"]), inline=False)
@@ -69,7 +127,7 @@ async def lootbox(ctx:SlashContext):
 )
 
 async def unim(ctx:SlashContext):
-  getUNIM()
+  unimLeft = getUNIM()
   embed=discord.Embed(title="Crypto Unicorns Darkforest - Remaining UNIM", description="\u200b", color=0xff00c8)
   embed.set_thumbnail(url="https://lh3.googleusercontent.com/EorjfSP6_15XdWcMLzJqHTC-y1aadmGeL_jydEtpL4aTj--lUdQ1GWy_bdvb8PN6Dmf46rXOZxgYQkbDVEoNnjHrWKO9HUdc39RdPkA=s0")
   embed.add_field(name="UNIM", value="{}".format(unimLeft["unim"]), inline=False)
@@ -154,6 +212,248 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
       embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} UNIM = {(price*amount):,.2f} {currency.upper()}", inline=False)
   embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
   await ctx.send(embed=embed)
+  
+###########################################################################
+
+@slash.slash(
+  name="breedUnicorn",
+  description="Calculate the breed points of a unicorn",
+  guild_ids=[775721079539761154,777099688604205057],
+  default_permission=False,
+  permissions={
+    775721079539761154 : [
+      create_permission(849625257186164777, SlashCommandPermissionType.ROLE, True)
+    ],
+    777099688604205057: [
+      create_permission(777105517608435712, SlashCommandPermissionType.ROLE, True)
+    ]
+  },
+  options=[
+    create_option(
+      name="currency",
+      description="Choose the currency",
+      required=True,
+      option_type=3,
+      choices=[
+        create_choice(
+          name="Ethereum",
+          value="eth"
+        ),
+        create_choice(
+          name="US Dollar",
+          value="usd"
+        ),
+        create_choice(
+          name="Philippine Peso",
+          value="php"
+        )
+      ]
+    ),
+    create_option(
+      name="parent_one",
+      description="Enter the current breed count of your first unicorn",
+      required=True,
+      option_type=3,
+      choices=[
+        create_choice(
+          name="0/8",
+          value="0"
+        ),
+        create_choice(
+          name="1/8",
+          value="1"
+        ),
+        create_choice(
+          name="2/8",
+          value="2"
+        ),
+        create_choice(
+          name="3/8",
+          value="3"
+        ),
+        create_choice(
+          name="4/8",
+          value="4"
+        ),
+        create_choice(
+          name="5/8",
+          value="5"
+        ),
+        create_choice(
+          name="6/8",
+          value="6"
+        ),
+        create_choice(
+          name="7/8",
+          value="7"
+        )
+      ]
+    ),
+    create_option(
+      name="parent_two",
+      description="Enter the current breed count of your 2nd unicorn",
+      required=True,
+      option_type=3,
+      choices=[
+        create_choice(
+          name="0/8",
+          value="0"
+        ),
+        create_choice(
+          name="1/8",
+          value="1"
+        ),
+        create_choice(
+          name="2/8",
+          value="2"
+        ),
+        create_choice(
+          name="3/8",
+          value="3"
+        ),
+        create_choice(
+          name="4/8",
+          value="4"
+        ),
+        create_choice(
+          name="5/8",
+          value="5"
+        ),
+        create_choice(
+          name="6/8",
+          value="6"
+        ),
+        create_choice(
+          name="7/8",
+          value="7"
+        )
+      ]
+    ),
+    create_option(
+      name="breed_up_to",
+      description="How many times do you want to breed the unicorns?",
+      required=True,
+      option_type=4,
+      choices=[
+        create_choice(
+          name=1,
+          value=1
+        ),
+        create_choice(
+          name=2,
+          value=2
+        ),
+        create_choice(
+          name=3,
+          value=3
+        ),
+        create_choice(
+          name=4,
+          value=4
+        ),
+        create_choice(
+          name=5,
+          value=5
+        ),
+        create_choice(
+          name=6,
+          value=6
+        ),
+        create_choice(
+          name=7,
+          value=7
+        ),
+        create_choice(
+          name=8,
+          value=8
+        )
+      ]
+    ),
+    create_option(
+      name="include_evolution_cost",
+      description="Want to include the evolution costs of all children?",
+      required=True,
+      option_type=5
+    )
+  ]
+)
+
+async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_two:str, breed_up_to:str, include_evolution_cost:bool):
+  getUNIMPrice()
+  if currency == "eth":
+    price = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
+  else:
+    price = priceOfUNIM[currency]
+  breedPointsUNIM = {
+    0:0,
+    1:300,
+    2:700,
+    3:1500,
+    4:2700,
+    5:4200,
+    6:6000,
+    7:9000,
+    8:12000
+  }
+  breedPointsRBW = {
+    0:0,
+    1:5,
+    2:5,
+    3:5,
+    4:5,
+    5:5,
+    6:5,
+    7:5,
+    8:5
+  }
+  totalUNIM, totalRBW = 0, 0
+  parentOne = int(parent_one)
+  parentTwo = int(parent_two)
+  breedUpTo = int(breed_up_to)
+  if (parentOne+breedUpTo) > 8 and (parentTwo+breedUpTo) > 8:
+    await ctx.send(f"Can't breed. Your two unicorns cannot be bred to more than 8 times. Currently {parentOne}/8",hidden=True)
+  elif (parentOne+breedUpTo) > 8:
+    await ctx.send(f"Can't breed. Your first unicorn cannot be bred to more than 8 times. Currently {parentTwo}/8",hidden=True)
+  elif (parentTwo+breedUpTo) > 8:
+    await ctx.send("Can't breed. Your second unicorn cannot be bred to more than 8 times.",hidden=True)
+  else:
+    embed=discord.Embed(title="Crypto Unicorns - Breeding calculator", description="**Official contract addresses:**\n UNIM - 0x64060aB139Feaae7f06Ca4E63189D86aDEb51691\n[Polygonscan link](https://polygonscan.com/token/0x64060ab139feaae7f06ca4e63189d86adeb51691)\n RBW - 0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f\n[Polygonscan link](https://polygonscan.com/token/0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f)\n[Breeding costs article](https://medium.com/@lagunagames/breeding-costs-unim-rbw-228be48db67d)", color=0xff00c8)
+    embed.set_thumbnail(url="https://pbs.twimg.com/media/FLWja6dXIAoMgbC?format=png&name=small")
+    embed.add_field(name="Parent 1", value=f"{parentOne}/8", inline=True)
+    embed.add_field(name="Parent 2", value=f"{parentTwo}/8", inline=True)
+    embed.add_field(name="Breed", value=f"{breedUpTo} time(s)", inline=True)
+    embed.add_field(name="\u200b", value="\u200b", inline=False)
+    for x in range(parentOne+1,parentOne+breedUpTo+1): #calculate UNIM needed for the first parent
+      totalUNIM = totalUNIM+breedPointsUNIM[x]
+    for y in range(parentTwo+1,parentTwo+breedUpTo+1): #calculate UNIM needed for the second parent
+      totalUNIM = totalUNIM+breedPointsUNIM[y]
+    if include_evolution_cost is True:
+      unimEvolutionCost = 2500
+      totalUNIM = totalUNIM+(unimEvolutionCost*breedUpTo)
+      embed.add_field(name="Total UNIM needed (incl. evolution)", value=f"{totalUNIM} UNIM", inline=True)
+    else:
+      embed.add_field(name="Total UNIM needed", value=f"{totalUNIM} UNIM", inline=True)
+    for x in range(parentOne+1,parentOne+breedUpTo+1): #calculate RBW needed for the first parent
+      totalRBW = totalRBW+breedPointsRBW[x]
+    for y in range(parentTwo+1,parentTwo+breedUpTo+1): #calculate RBW needed for the second parent
+      totalRBW = totalRBW+breedPointsRBW[y]
+    if include_evolution_cost is True:
+      rbwEvolutionCost = 25
+      totalRBW = totalRBW+(rbwEvolutionCost*breedUpTo)
+      embed.add_field(name="Total RBW needed (incl. evolution)", value=f"{totalRBW} RBW", inline=True)
+    else:
+      embed.add_field(name="Total RBW needed", value=f"{totalRBW} RBW", inline=True)
+    embed.add_field(name="\u200b", value="\u200b", inline=False)
+    embed.add_field(name="UNIM price", value=f"{price} {currency.upper()}", inline=True)
+    if currency == "eth":
+      calculation = float(price)*totalUNIM
+      finalCalc = ("%.17f" % calculation).rstrip('0').rstrip('.')
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {totalUNIM} UNIM = {finalCalc} {currency.upper()}", inline=True)
+    else:
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {totalUNIM} UNIM = {(price*totalUNIM):,.2f} {currency.upper()}", inline=True)
+    embed.add_field(name="RBW price", value="To be added once data is available.", inline=False)
+    embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
+    await ctx.send(embed=embed)
   
 ###########################################################################
 
