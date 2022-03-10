@@ -16,6 +16,8 @@ Commands:
 - /summonresults
 - /unimleft
 - /unimprice
+- /rbwcopperprice
+- /rbwbalancerprice
 - /breedunicorn
 
 Since the portal of Darkforest Act 1 has ended already, feel free to remove the code related to it (/shadowcorn, /lootbox, /summonresults).
@@ -40,6 +42,15 @@ Since the portal of Darkforest Act 1 has ended already, feel free to remove the 
 ![sample3](https://i.imgur.com/d2hri22.png)
 ![sample4](https://i.imgur.com/OZTGEct.png)
 ![sample5](https://i.imgur.com/oRnQjGn.png)
+
+- Get the RBW price during the Copper Launch
+
+![sample11](https://i.imgur.com/oDJwyh9.png)
+
+- Get the current price of RBW in Balancer. Can calculate the desired amount as well. (This command was built as Coingecko was taking time to list RBW)
+
+![sample12](https://i.imgur.com/ZR1qCO1.png)
+![sameple13](https://i.imgur.com/YsUsFl1.png)
 
 - Calculate the breeding costs
 
