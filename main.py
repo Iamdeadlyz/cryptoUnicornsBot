@@ -4,6 +4,8 @@ from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
 from discord_slash.utils.manage_commands import create_choice, create_option
 from cryptoUnicorn import getShadowCorns, getLootBox, getUNIM, updateTransactions, getRequestIDs, filterSummons
+from copper import getRBWCopperPrice
+from rbwBalancerPrice import getRbwBalancerprice
 from price import priceOfUNIM, getUNIMPrice
 
 ###########################################################################
@@ -21,6 +23,7 @@ async def on_message(message):
     return
     
 ###########################################################################
+#/shadowcorn
 
 @slash.slash(
   name="shadowCorn",
@@ -43,6 +46,7 @@ async def shadowCorn(ctx:SlashContext):
   await ctx.send(embed=embed)
 
 ###########################################################################
+#/summonresults
 
 def percentage(part, whole):
   percentage = 100 * float(part)/float(whole)
@@ -101,6 +105,7 @@ async def summonresults(ctx:SlashContext):
   await message.edit(content=None,embed=embed)
 
 ###########################################################################
+#/lootbox
 
 @slash.slash(
   name="lootbox",
@@ -118,6 +123,7 @@ async def lootbox(ctx:SlashContext):
   await ctx.send(embed=embed)
 
 ###########################################################################
+#/unimleft
 
 @slash.slash(
   name="unimLeft",
@@ -134,6 +140,7 @@ async def unim(ctx:SlashContext):
   await ctx.send(embed=embed)
 
 ###########################################################################
+#/unimprice
 
 @slash.slash(
   name="unimPrice",
@@ -214,6 +221,7 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
   await ctx.send(embed=embed)
   
 ###########################################################################
+#/breedunicorn
 
 @slash.slash(
   name="breedUnicorn",
@@ -471,6 +479,48 @@ async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_tw
     embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
     await ctx.send(embed=embed)
   
+###########################################################################
+#/rbwcopperprice
+
+@slash.slash(
+  name="rbwCopperPrice",
+  description="Get the price of RBW in the Copper Launch",
+  guild_ids=[000000000000000], #replace the guildID here to your server ID
+  default_permission=True
+)
+
+async def rbwCopperPrice(ctx:SlashContext, rbwamount:int = None):
+  rbw = getRBWCopperPrice()
+  rbwPrice = float(rbw["price"])
+  embed=discord.Embed(title="Crypto Unicorns - RBW price in Copper", description="**Official contract address:** 0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f \n[Polygonscan link](https://polygonscan.com/token/0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f)", color=0xff00c8, url="https://polygon.copperlaunch.com/pools/0x34497B3fD9e337B19F3C0B119caFE78EA7F46a94")
+  embed.set_thumbnail(url="https://pbs.twimg.com/media/FMsgyYFXMAsz4Vx?format=png")
+  embed.add_field(name="RBW price", value=f"{rbwPrice:.4f} USDC", inline=False)
+  if rbwamount is not None:
+    calculation = rbwPrice * rbwamount
+    embed.add_field(name="RBW calculation", value=f"{rbwPrice:.4f} USDC * {rbwamount} RBW = {calculation:.4f} USDC", inline=False)
+  embed.add_field(name="Price last updated on", value="<t:{}:F>".format(rbw["timeAndDate"]), inline=False)
+  await ctx.send(embed=embed)
+
+###########################################################################
+#/rbwbalancerprice
+
+@slash.slash(
+  name="rbwBalancerPrice",
+  description="Get the price of RBW in Balancer",
+  guild_ids=[000000000000000], #replace the guildID here to your server ID
+  default_permission=True
+)
+
+async def rbwBalancerPrice(ctx:SlashContext, rbwamount:int = None):
+  rbw = getRbwBalancerprice()
+  embed=discord.Embed(title="Crypto Unicorns - RBW price in Balancer", description="**Official contract address:** 0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f \n[Polygonscan link](https://polygonscan.com/token/0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f)", color=0xff00c8, url="https://polygon.copperlaunch.com/pools/0x34497B3fD9e337B19F3C0B119caFE78EA7F46a94")
+  embed.set_thumbnail(url="https://pbs.twimg.com/media/FMsgyYFXMAsz4Vx?format=png")
+  embed.add_field(name="RBW price", value=f"{rbw:.4f} USDC", inline=False)
+  if rbwamount is not None:
+    calculation = rbw * rbwamount
+    embed.add_field(name="RBW calculation", value=f"{rbw:.4f} USDC * {rbwamount} RBW = {calculation:.4f} USDC", inline=False)
+  await ctx.send(embed=embed)
+
 ###########################################################################
 
 client.run("enterYourDiscordBotToken")
