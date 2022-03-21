@@ -32,7 +32,7 @@ async def on_message(message):
 )
 
 async def unim(ctx:SlashContext):
-  unimLeft = getUNIM()
+  unimLeft = await asyncio.get_running_loop().run_in_executor(None, getUNIM)
   embed=discord.Embed(title="Crypto Unicorns Darkforest - Remaining UNIM", description="\u200b", color=0xff00c8)
   embed.set_thumbnail(url="https://lh3.googleusercontent.com/EorjfSP6_15XdWcMLzJqHTC-y1aadmGeL_jydEtpL4aTj--lUdQ1GWy_bdvb8PN6Dmf46rXOZxgYQkbDVEoNnjHrWKO9HUdc39RdPkA=s0")
   embed.add_field(name="UNIM", value="{}".format(unimLeft["unim"]), inline=False)
