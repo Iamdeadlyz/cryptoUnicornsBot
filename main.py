@@ -93,7 +93,7 @@ async def unim(ctx:SlashContext):
     ),
     create_option(
       name="amount",
-      description="Choose the amount (optional)",
+      description="Enter the amount (optional)",
       required=False,
       option_type=4
     )
@@ -174,7 +174,7 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
     ),
     create_option(
       name="amount",
-      description="Choose the amount (optional)",
+      description="Enter the amount (optional)",
       required=False,
       option_type=4
     )
