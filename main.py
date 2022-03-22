@@ -383,39 +383,6 @@ async def rbwPrice(ctx:SlashContext, currency:str, amount:int = None):
 )
 
 async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_two:str, breed_up_to:str, include_evolution_cost:bool):
-  message = await ctx.send("Calculating...")
-  await asyncio.get_running_loop().run_in_executor(None, getUNIMprice)
-  await asyncio.get_running_loop().run_in_executor(None, getRBWprice)
-  if currency == "eth":
-    thePriceOfUNIM = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
-    thePriceOfRBW = ("%.17f" % priceOfRBW["eth"]).rstrip('0').rstrip('.')
-  else:
-    thePriceOfUNIM = priceOfUNIM[currency]
-    thePriceOfRBW = priceOfRBW[currency]
-  breedPointsUNIM = {
-    0:0,
-    1:300,
-    2:700,
-    3:1500,
-    4:2700,
-    5:4200,
-    6:6000,
-    7:9000,
-    8:12000
-  }
-  breedPointsRBW = {
-    0:0,
-    1:5,
-    2:5,
-    3:5,
-    4:5,
-    5:5,
-    6:5,
-    7:5,
-    8:5
-  }
-  totalUNIM, totalRBW = 0, 0
-  totalBreedingCost = 0
   parentOne = int(parent_one)
   parentTwo = int(parent_two)
   breedUpTo = int(breed_up_to)
@@ -426,6 +393,39 @@ async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_tw
   elif (parentTwo+breedUpTo) > 8:
     await ctx.send("Can't breed. Your second unicorn cannot be bred to more than 8 times.",hidden=True)
   else:
+    totalUNIM, totalRBW = 0, 0
+    totalBreedingCost = 0
+    await asyncio.get_running_loop().run_in_executor(None, getUNIMprice)
+    await asyncio.get_running_loop().run_in_executor(None, getRBWprice)
+    if currency == "eth":
+      thePriceOfUNIM = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
+      thePriceOfRBW = ("%.17f" % priceOfRBW["eth"]).rstrip('0').rstrip('.')
+    else:
+      thePriceOfUNIM = priceOfUNIM[currency]
+      thePriceOfRBW = priceOfRBW[currency]
+    breedPointsUNIM = {
+      0:0,
+      1:300,
+      2:700,
+      3:1500,
+      4:2700,
+      5:4200,
+      6:6000,
+      7:9000,
+      8:12000
+    }
+    breedPointsRBW = {
+      0:0,
+      1:5,
+      2:5,
+      3:5,
+      4:5,
+      5:5,
+      6:5,
+      7:5,
+      8:5
+    }
+    message = await ctx.send("Calculating...")
     embed=discord.Embed(title="Crypto Unicorns - Breeding calculator", description="**Official contract addresses:**\n UNIM - 0x64060aB139Feaae7f06Ca4E63189D86aDEb51691\n[Polygonscan link](https://polygonscan.com/token/0x64060ab139feaae7f06ca4e63189d86adeb51691)\n RBW - 0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f\n[Polygonscan link](https://polygonscan.com/token/0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f)\n[Breeding costs article](https://medium.com/@lagunagames/breeding-costs-unim-rbw-228be48db67d)", color=0xff00c8)
     embed.set_thumbnail(url="https://i.imgur.com/cQRs6Xz.png")
     embed.add_field(name="Parent 1", value=f"{parentOne}/8", inline=True)
