@@ -41,7 +41,7 @@ async def unimLeft(ctx:SlashContext):
 
 @slash.slash(
   name="breedUnicorn",
-  description="Calculate the breed points of a unicorn",
+  description="Calculate the breeding costs",
   guild_ids=[000000000000000], #replace the guildID here to your server ID
   default_permission=True,
   options=[
