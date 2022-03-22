@@ -387,11 +387,11 @@ async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_tw
   parentTwo = int(parent_two)
   breedUpTo = int(breed_up_to)
   if (parentOne+breedUpTo) > 8 and (parentTwo+breedUpTo) > 8:
-    await ctx.send(f"Can't breed. Your two unicorns cannot be bred to more than 8 times. Currently {parentOne}/8",hidden=True)
+    await ctx.send(f"Can't breed. Your two unicorns cannot be bred to more than 8 times. Currently {parentOne}/8.",hidden=True)
   elif (parentOne+breedUpTo) > 8:
-    await ctx.send(f"Can't breed. Your first unicorn cannot be bred to more than 8 times. Currently {parentOne}/8",hidden=True)
+    await ctx.send(f"Can't breed. Your first unicorn cannot be bred to more than 8 times. Currently {parentOne}/8.",hidden=True)
   elif (parentTwo+breedUpTo) > 8:
-    await ctx.send(f"Can't breed. Your second unicorn cannot be bred to more than 8 times. Currently {parentTwo}/8",hidden=True)
+    await ctx.send(f"Can't breed. Your second unicorn cannot be bred to more than 8 times. Currently {parentTwo}/8.",hidden=True)
   else:
     totalUNIM, totalRBW = 0, 0
     totalBreedingCost = 0
