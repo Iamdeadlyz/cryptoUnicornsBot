@@ -36,7 +36,7 @@ async def unimLeft(ctx:SlashContext):
   embed=discord.Embed(title="Crypto Unicorns Darkforest - Remaining UNIM", description="\u200b", color=0xff00c8)
   embed.set_thumbnail(url="https://lh3.googleusercontent.com/EorjfSP6_15XdWcMLzJqHTC-y1aadmGeL_jydEtpL4aTj--lUdQ1GWy_bdvb8PN6Dmf46rXOZxgYQkbDVEoNnjHrWKO9HUdc39RdPkA=s0")
   embed.add_field(name="UNIM", value="{}".format(unimLeftInDf["unim"]), inline=False)
-  await ctx.send(embed=embed)
+  await ctx.send(content=f"<@{ctx.author.id}>",embed=embed)
 
 ###########################################################################
 #/unimprice
@@ -117,7 +117,7 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
     else:
       embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} UNIM = {(price*amount):,.2f} {currency.upper()}", inline=False)
   embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
-  await ctx.send(embed=embed)
+  await ctx.send(content=f"<@{ctx.author.id}>",embed=embed)
 
 ###########################################################################
 #/rbwprice
@@ -198,7 +198,7 @@ async def rbwPrice(ctx:SlashContext, currency:str, amount:int = None):
     else:
       embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} RBW = {(price*amount):,.2f} {currency.upper()}", inline=False)
   embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
-  await ctx.send(embed=embed)
+  await ctx.send(content=f"<@{ctx.author.id}>",embed=embed)
   
 ###########################################################################
 #/breedunicorn
@@ -479,7 +479,7 @@ async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_tw
     else:
       embed.add_field(name="Total breeding cost", value=f"{totalBreedingCost:,.2f} {currency.upper()}", inline=False)
     embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
-    await message.edit(content=None,embed=embed)
+    await message.edit(content=f"<@{ctx.author.id}>",embed=embed)
 
 ###########################################################################
 
