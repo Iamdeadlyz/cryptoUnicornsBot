@@ -18,6 +18,11 @@ Active commands:
 
 ==============================
 
+- Get the amount of UNIM left in the dark forest
+
+![sample17](https://i.imgur.com/2XWvaOU.png)
+![sample18](https://i.imgur.com/Qfpdzgm.png)
+
 - Get the current price of UNIM and RBW to your desired currency and calculate the equivalent amount. Hyperlinked the Coingecko and Polygonscan pages. The price data is cached for 30s to prevent being rate-limited.
 
 ![sample3](https://i.imgur.com/d2hri22.png)
@@ -52,9 +57,9 @@ Since the portal of Darkforest Act 1 has ended already, the code related to the 
 
 ![sample1](https://i.imgur.com/RrI03Yl.png)
 
-- Check the number of minted lootbox and the amount of UNIM left in the contract.
+- Check the number of minted lootbox
 
-![sample2](https://i.imgur.com/pVf9H3Z.png)
+![sample2](https://i.imgur.com/X3XzejS.png)
 
 - Get the results of each summon category
 
