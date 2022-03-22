@@ -2,7 +2,7 @@
 #Old main.py which has the major shadowcorn act 1 and copper launch related commands 
 ###########################################################################
 
-import os
+import asyncio
 import discord
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
@@ -10,7 +10,7 @@ from discord_slash.utils.manage_commands import create_choice, create_option
 from cryptoUnicorn import getShadowCorns, getLootBox, getUNIM, updateTransactions, getRequestIDs, filterSummons
 from copper import getRBWCopperPrice
 from rbwBalancerPrice import getRbwBalancerprice
-from price import priceOfUNIM, getUNIMPrice
+from price import priceOfUNIM, getUNIMprice, priceOfRBW, getRBWprice
 
 ###########################################################################
 
@@ -198,7 +198,7 @@ async def unim(ctx:SlashContext):
     ),
     create_option(
       name="amount",
-      description="Choose the amount (optional)",
+      description="Enter the amount (optional)",
       required=False,
       option_type=4
     )
@@ -206,7 +206,7 @@ async def unim(ctx:SlashContext):
 )
 
 async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
-  getUNIMPrice()
+  await asyncio.get_running_loop().run_in_executor(None, getUNIMprice)
   if currency == "eth":
     price = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
   else:
@@ -222,7 +222,7 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
     else:
       embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} UNIM = {(price*amount):,.2f} {currency.upper()}", inline=False)
   embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
-  await ctx.send(embed=embed)
+  await ctx.send(content=f"<@{ctx.author.id}>",embed=embed)
   
 ###########################################################################
 #/breedunicorn
@@ -407,46 +407,51 @@ async def unimPrice(ctx:SlashContext, currency:str, amount:int = None):
 )
 
 async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_two:str, breed_up_to:str, include_evolution_cost:bool):
-  getUNIMPrice()
-  if currency == "eth":
-    price = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
-  else:
-    price = priceOfUNIM[currency]
-  breedPointsUNIM = {
-    0:0,
-    1:300,
-    2:700,
-    3:1500,
-    4:2700,
-    5:4200,
-    6:6000,
-    7:9000,
-    8:12000
-  }
-  breedPointsRBW = {
-    0:0,
-    1:5,
-    2:5,
-    3:5,
-    4:5,
-    5:5,
-    6:5,
-    7:5,
-    8:5
-  }
-  totalUNIM, totalRBW = 0, 0
   parentOne = int(parent_one)
   parentTwo = int(parent_two)
   breedUpTo = int(breed_up_to)
   if (parentOne+breedUpTo) > 8 and (parentTwo+breedUpTo) > 8:
-    await ctx.send(f"Can't breed. Your two unicorns cannot be bred to more than 8 times. Currently {parentOne}/8",hidden=True)
+    await ctx.send(f"Can't breed. Your two unicorns cannot be bred to more than 8 times. Parent one has {parentOne}/8 while parent two has {parentTwo}/8 breeding points.",hidden=True)
   elif (parentOne+breedUpTo) > 8:
-    await ctx.send(f"Can't breed. Your first unicorn cannot be bred to more than 8 times. Currently {parentTwo}/8",hidden=True)
+    await ctx.send(f"Can't breed. Your first unicorn cannot be bred to more than 8 times. Currently {parentOne}/8 breeding points.",hidden=True)
   elif (parentTwo+breedUpTo) > 8:
-    await ctx.send("Can't breed. Your second unicorn cannot be bred to more than 8 times.",hidden=True)
+    await ctx.send(f"Can't breed. Your second unicorn cannot be bred to more than 8 times. Currently {parentTwo}/8 breeding points.",hidden=True)
   else:
+    totalUNIM, totalRBW = 0, 0
+    totalBreedingCost = 0
+    await asyncio.get_running_loop().run_in_executor(None, getUNIMprice)
+    await asyncio.get_running_loop().run_in_executor(None, getRBWprice)
+    if currency == "eth":
+      thePriceOfUNIM = ("%.17f" % priceOfUNIM["eth"]).rstrip('0').rstrip('.')
+      thePriceOfRBW = ("%.17f" % priceOfRBW["eth"]).rstrip('0').rstrip('.')
+    else:
+      thePriceOfUNIM = priceOfUNIM[currency]
+      thePriceOfRBW = priceOfRBW[currency]
+    breedPointsUNIM = {
+      0:0,
+      1:300,
+      2:700,
+      3:1500,
+      4:2700,
+      5:4200,
+      6:6000,
+      7:9000,
+      8:12000
+    }
+    breedPointsRBW = {
+      0:0,
+      1:5,
+      2:5,
+      3:5,
+      4:5,
+      5:5,
+      6:5,
+      7:5,
+      8:5
+    }
+    message = await ctx.send("Calculating...")
     embed=discord.Embed(title="Crypto Unicorns - Breeding calculator", description="**Official contract addresses:**\n UNIM - 0x64060aB139Feaae7f06Ca4E63189D86aDEb51691\n[Polygonscan link](https://polygonscan.com/token/0x64060ab139feaae7f06ca4e63189d86adeb51691)\n RBW - 0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f\n[Polygonscan link](https://polygonscan.com/token/0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f)\n[Breeding costs article](https://medium.com/@lagunagames/breeding-costs-unim-rbw-228be48db67d)", color=0xff00c8)
-    embed.set_thumbnail(url="https://pbs.twimg.com/media/FLWja6dXIAoMgbC?format=png&name=small")
+    embed.set_thumbnail(url="https://i.imgur.com/cQRs6Xz.png")
     embed.add_field(name="Parent 1", value=f"{parentOne}/8", inline=True)
     embed.add_field(name="Parent 2", value=f"{parentTwo}/8", inline=True)
     embed.add_field(name="Breed", value=f"{breedUpTo} time(s)", inline=True)
@@ -472,17 +477,34 @@ async def breedUnicorn(ctx:SlashContext, currency:str, parent_one:str, parent_tw
     else:
       embed.add_field(name="Total RBW needed", value=f"{totalRBW} RBW", inline=True)
     embed.add_field(name="\u200b", value="\u200b", inline=False)
-    embed.add_field(name="UNIM price", value=f"{price} {currency.upper()}", inline=True)
     if currency == "eth":
-      calculation = float(price)*totalUNIM
-      finalCalc = ("%.17f" % calculation).rstrip('0').rstrip('.')
-      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {totalUNIM} UNIM = {finalCalc} {currency.upper()}", inline=True)
+      unimCalculation = float(thePriceOfUNIM)*totalUNIM
+      finalUNIMcalc = ("%.17f" % unimCalculation).rstrip('0').rstrip('.')
+      rbwCalculation = float(thePriceOfRBW)*totalRBW
+      finalRBWcalc = ("%.17f" % rbwCalculation).rstrip('0').rstrip('.')
+      totalBreedingCost = unimCalculation + rbwCalculation
+      embed.add_field(name="UNIM price", value=f"{thePriceOfUNIM} {currency.upper()}", inline=True)
+      embed.add_field(name="UNIM calculation", value=f"{thePriceOfUNIM} {currency.upper()} * {totalUNIM} UNIM = {finalUNIMcalc} {currency.upper()}", inline=True)
+      embed.add_field(name="\u200b", value="\u200b", inline=False)
+      embed.add_field(name="RBW price", value=f"{thePriceOfRBW} {currency.upper()}", inline=True)
+      embed.add_field(name="RBW calculation", value=f"{thePriceOfRBW} {currency.upper()} * {totalRBW} UNIM = {finalRBWcalc} {currency.upper()}", inline=True)
     else:
-      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {totalUNIM} UNIM = {(price*totalUNIM):,.2f} {currency.upper()}", inline=True)
-    embed.add_field(name="RBW price", value="To be added once data is available.", inline=False)
+      unimCalculation = thePriceOfUNIM * totalUNIM
+      rbwCalculation = thePriceOfRBW * totalRBW
+      totalBreedingCost = unimCalculation + rbwCalculation
+      embed.add_field(name="UNIM price", value=f"{thePriceOfUNIM:.2f} {currency.upper()}", inline=True)
+      embed.add_field(name="UNIM calculation", value=f"{thePriceOfUNIM:.2f} {currency.upper()} * {totalUNIM} UNIM = {unimCalculation:,.2f} {currency.upper()}", inline=True)
+      embed.add_field(name="\u200b", value="\u200b", inline=False)
+      embed.add_field(name="RBW price", value=f"{thePriceOfRBW:.2f} {currency.upper()}", inline=True)
+      embed.add_field(name="RBW calculation", value=f"{thePriceOfRBW:.2f} {currency.upper()} * {totalRBW} UNIM = {rbwCalculation:,.2f} {currency.upper()}", inline=True)
+    embed.add_field(name="\u200b", value="\u200b", inline=False)
+    if currency == "eth":
+      embed.add_field(name="Total breeding cost", value=f"{totalBreedingCost} {currency.upper()}", inline=False)
+    else:
+      embed.add_field(name="Total breeding cost", value=f"{totalBreedingCost:,.2f} {currency.upper()}", inline=False)
     embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
-    await ctx.send(embed=embed)
-  
+    await message.edit(content=f"<@{ctx.author.id}>",embed=embed)
+
 ###########################################################################
 #/rbwcopperprice
 
@@ -524,6 +546,88 @@ async def rbwBalancerPrice(ctx:SlashContext, rbwamount:int = None):
     calculation = rbw * rbwamount
     embed.add_field(name="RBW calculation", value=f"{rbw:.4f} USDC * {rbwamount} RBW = {calculation:.4f} USDC", inline=False)
   await ctx.send(embed=embed)
+
+###########################################################################
+
+#/rbwprice
+
+@slash.slash(
+  name="rbwPrice",
+  description="Get the price of RBW",
+  guild_ids=[000000000000000], #replace the guildID here to your server ID
+  default_permission=True,
+  options=[
+    create_option(
+      name="currency",
+      description="Choose the currency",
+      required=True,
+      option_type=3,
+      choices=[
+        create_choice(
+          name="Ethereum",
+          value="eth"
+        ),
+        create_choice(
+          name="US Dollar",
+          value="usd"
+        ),
+        create_choice(
+          name="Philippine Peso",
+          value="php"
+        ),
+        create_choice(
+          name="Canadian Dollar",
+          value="cad"
+        ),
+        create_choice(
+          name="South African Rand",
+          value="zar"
+        ),
+        create_choice(
+          name="Hungarian Forint",
+          value="huf"
+        ),
+        create_choice(
+          name="Chinese Yuan",
+          value="cny"
+        ),
+        create_choice(
+          name="Russian Ruble",
+          value="rub"
+        ),
+        create_choice(
+          name="Thai Baht",
+          value="thb"
+        )
+      ]
+    ),
+    create_option(
+      name="amount",
+      description="Enter the amount (optional)",
+      required=False,
+      option_type=4
+    )
+  ]
+)
+
+async def rbwPrice(ctx:SlashContext, currency:str, amount:int = None):
+  await asyncio.get_running_loop().run_in_executor(None, getRBWprice)
+  if currency == "eth":
+    price = ("%.17f" % priceOfRBW["eth"]).rstrip('0').rstrip('.')
+  else:
+    price = priceOfRBW[currency]
+  embed=discord.Embed(title="Crypto Unicorns - RBW price", description="**Official contract address:** 0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f \n[Polygonscan link](https://polygonscan.com/token/0x431cd3c9ac9fc73644bf68bf5691f4b83f9e104f)", color=0xff00c8, url="https://www.coingecko.com/en/coins/rainbow-token-2")
+  embed.set_thumbnail(url="https://pbs.twimg.com/media/FMsgyYFXMAsz4Vx?format=png")
+  embed.add_field(name="RBW price", value=f"{price} {currency.upper()}", inline=False)
+  if amount is not None:
+    if currency == "eth":
+      calculation = float(price)*amount
+      finalCalc = ("%.17f" % calculation).rstrip('0').rstrip('.')
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} RBW = {finalCalc} {currency.upper()}", inline=False)
+    else:
+      embed.add_field(name="Calculation", value=f"{price} {currency.upper()} * {amount} RBW = {(price*amount):,.2f} {currency.upper()}", inline=False)
+  embed.set_footer(text="Powered by Coingecko. Cached for 30s.",icon_url="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png")
+  await ctx.send(content=f"<@{ctx.author.id}>",embed=embed)
 
 ###########################################################################
 
