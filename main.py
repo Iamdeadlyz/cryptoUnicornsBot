@@ -215,25 +215,20 @@ async def breedUnicorn(ctx:SlashContext, parent_one:str, parent_two:str, breed_u
     embed.add_field(name="Parent 2", value=f"{parentTwo}/8", inline=True)
     embed.add_field(name="Breed", value=f"{breedUpTo} time(s)", inline=True)
     embed.add_field(name="\u200b", value="\u200b", inline=False)
-    for x in range(parentOne+1,parentOne+breedUpTo+1): #calculate UNIM needed for the first parent
-      totalUNIM = totalUNIM+breedPointsUNIM[x]
-    for y in range(parentTwo+1,parentTwo+breedUpTo+1): #calculate UNIM needed for the second parent
-      totalUNIM = totalUNIM+breedPointsUNIM[y]
+    for x in range(parentOne+1,parentOne+breedUpTo+1): 
+      totalUNIM = totalUNIM+breedPointsUNIM[x] #calculate UNIM needed for the first parent
+      totalRBW = totalRBW+breedPointsRBW[x] #calculate RBW needed for the first parent
+    for y in range(parentTwo+1,parentTwo+breedUpTo+1): 
+      totalUNIM = totalUNIM+breedPointsUNIM[y] #calculate UNIM needed for the second parent
+      totalRBW = totalRBW+breedPointsRBW[y] #calculate RBW needed for the second parent
     if include_evolution_cost is True:
-      unimEvolutionCost = 2500
+      unimEvolutionCost, rbwEvolutionCost = 2500, 25
       totalUNIM = totalUNIM+(unimEvolutionCost*breedUpTo)
-      embed.add_field(name="Total UNIM needed (incl. evolution)", value=f"{totalUNIM} UNIM", inline=True)
-    else:
-      embed.add_field(name="Total UNIM needed", value=f"{totalUNIM} UNIM", inline=True)
-    for x in range(parentOne+1,parentOne+breedUpTo+1): #calculate RBW needed for the first parent
-      totalRBW = totalRBW+breedPointsRBW[x]
-    for y in range(parentTwo+1,parentTwo+breedUpTo+1): #calculate RBW needed for the second parent
-      totalRBW = totalRBW+breedPointsRBW[y]
-    if include_evolution_cost is True:
-      rbwEvolutionCost = 25
       totalRBW = totalRBW+(rbwEvolutionCost*breedUpTo)
+      embed.add_field(name="Total UNIM needed (incl. evolution)", value=f"{totalUNIM} UNIM", inline=True)
       embed.add_field(name="Total RBW needed (incl. evolution)", value=f"{totalRBW} RBW", inline=True)
     else:
+      embed.add_field(name="Total UNIM needed", value=f"{totalUNIM} UNIM", inline=True)
       embed.add_field(name="Total RBW needed", value=f"{totalRBW} RBW", inline=True)
     await message.edit(content=f"<@{ctx.author.id}>",embed=embed)
 
