@@ -12,8 +12,6 @@ Oauth Discord scopes:
 
 Active commands:
 - /unimleft
-- /unimprice
-- /rbwprice
 - /breedunicorn
 
 ==============================
@@ -23,22 +21,10 @@ Active commands:
 ![sample17](https://i.imgur.com/2XWvaOU.png)
 ![sample18](https://i.imgur.com/Qfpdzgm.png)
 
-- Get the current price of UNIM and RBW to your desired currency and calculate the equivalent amount. Hyperlinked the Coingecko and Polygonscan pages. The price data is cached for 30s to prevent being rate-limited.
-
-![sample3](https://i.imgur.com/d2hri22.png)
-![sample4](https://i.imgur.com/OZTGEct.png)
-![sample5](https://i.imgur.com/oRnQjGn.png)
-
-![sample14](https://i.imgur.com/bGSypmC.png)
-![sameple15](https://i.imgur.com/WWm7kL2.png)
-![sample16](https://i.imgur.com/ITb9wxD.png)
-
-
 - Calculate the breeding costs
 
-![sameple8](https://i.imgur.com/wCCT6ir.png)
-![sameple9](https://i.imgur.com/LkuDxlD.png)
-![sample10](https://i.imgur.com/1DqsDzz.png)
+![sample17](https://i.imgur.com/V69yTye.png)
+![sample18](https://i.imgur.com/rkYiEJN.png)
 
 ==============================
 
@@ -50,6 +36,11 @@ Inactive commands
 - /rbwbalancerprice
 
 Since the portal of Darkforest Act 1 has ended already, the code related to the inactive commands are removed from main.py and stored in old-main.py. The same goes for the copper launch related commands.
+
+The following commands are removed as requested, but can be found in `old-main.py`
+- /unimprice
+- /rbwprice
+- /breedunicorn (with pricing)
 
 ==============================
 
@@ -74,3 +65,18 @@ Since the portal of Darkforest Act 1 has ended already, the code related to the 
 
 ![sample12](https://i.imgur.com/ZR1qCO1.png)
 ![sameple13](https://i.imgur.com/YsUsFl1.png)
+
+- Get the current price of UNIM and RBW to your desired currency and calculate the equivalent amount. Hyperlinked the Coingecko and Polygonscan pages. The price data is cached for 30s to prevent being rate-limited.
+
+![sample3](https://i.imgur.com/d2hri22.png)
+![sample4](https://i.imgur.com/OZTGEct.png)
+![sample5](https://i.imgur.com/oRnQjGn.png)
+![sample14](https://i.imgur.com/bGSypmC.png)
+![sameple15](https://i.imgur.com/WWm7kL2.png)
+![sample16](https://i.imgur.com/ITb9wxD.png)
+
+- Calculate the breeding costs with pricing details
+
+![sameple8](https://i.imgur.com/wCCT6ir.png)
+![sameple9](https://i.imgur.com/LkuDxlD.png)
+![sample10](https://i.imgur.com/1DqsDzz.png)
